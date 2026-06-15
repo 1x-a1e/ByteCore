@@ -1,5 +1,5 @@
-create database if not exists blogDB;
-use blogDB;
+create database if not exists DBPortfolio;
+use DBPortfolio;
 
 create table if not exists Users(
     id int primary key auto_increment,

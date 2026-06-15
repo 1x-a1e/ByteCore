@@ -5,7 +5,7 @@ class dbConnect {
     private $port = 3306;
     private $user = "root";
     private $password = "";
-    private $dbName = "blogDB";
+    private $dbName = "DBPortfolio";
     private $conn;
 
 
