@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # MyPortfolio
 =======
 # ByteCore — Documentazione Tecnica
@@ -773,4 +772,3 @@ Successivamente è possibile usare il pannello "Promuovi utente" nella dashboard
 ---
 
 *Documentazione generata il 12 giugno 2026*
->>>>>>> 39c045b (Versione 1.0 && primi setup del file setup.sh)
