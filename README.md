@@ -1,5 +1,3 @@
-# MyPortfolio
-=======
 # ByteCore — Documentazione Tecnica
 
 **Autore:** Alessio Tomaselli  
@@ -47,11 +45,12 @@ Le funzionalità principali sono:
 | Componente | Tecnologia |
 |---|---|
 | Linguaggio backend | PHP 8.x |
-| Database | MySQL (via PDO) |
+| Database | MySQL / MariaDB (via PDO) |
 | Rendering Markdown | `erusev/parsedown ^1.8` |
 | Frontend | HTML5 + CSS3 puro (nessun framework) |
 | Font | Google Fonts — *Share Tech Mono*, *Syne* |
 | Server di sviluppo | PHP built-in server (`php -S`) con `router.php` |
+| Server di produzione | XAMPP (Apache + MySQL/MariaDB) |
 
 ---
 
@@ -61,6 +60,8 @@ Le funzionalità principali sono:
 CompitoTomaselliAlessio/
 │
 ├── router.php                        ← Entry point: routing URL → file PHP
+├── setup.sh                          ← Script di installazione automatica
+├── start.sh                          ← Avvio del server PHP built-in
 │
 ├── databaseApi/
 │   ├── dbConnect.php                 ← Classe PDO con tutti i metodi DB
@@ -73,6 +74,7 @@ CompitoTomaselliAlessio/
 │   ├── logout/logout.php             ← Distruzione sessione
 │   ├── posts/apiPosts.php            ← Funzioni sui post e categorie
 │   ├── progetti/apiProgetti.php      ← Funzioni sui progetti
+│   ├── settingsApi/updateUser.php    ← Endpoint impostazioni profilo (parziale)
 │   └── users/apiUser.php             ← Funzioni sugli utenti
 │
 ├── assets/
@@ -112,7 +114,7 @@ CompitoTomaselliAlessio/
 
 ## 4. Database
 
-Il database si chiama `blogDB` e contiene quattro tabelle.
+Il database si chiama `DBPortfolio` e contiene quattro tabelle.
 
 ### 4.1 Tabella `Users`
 
@@ -200,7 +202,7 @@ CREATE TABLE Progetti (
 
 ## 5. Routing
 
-Il file `router.php` è l'entry point dell'applicazione. Viene utilizzato dal **server built-in di PHP** (`php -S localhost:8000 router.php`) e mappa ogni URL al file PHP corrispondente tramite uno `switch`.
+Il file `router.php` è l'entry point dell'applicazione. Viene utilizzato dal **server built-in di PHP** (`php -S 127.0.0.1:8080 router.php`) e mappa ogni URL al file PHP corrispondente tramite uno `switch`.
 
 Se il percorso corrisponde a un file statico esistente (CSS, immagini ecc.), il server lo serve direttamente (`return false`).
 
@@ -229,6 +231,7 @@ Se il percorso corrisponde a un file statico esistente (CSS, immagini ecc.), il 
 | `/admin/modify-post` | `admin/page/modifyPost/edit-post.php` | GET (`?id=`) | Pagina modifica post |
 | `/admin/update-post` | `admin/api/update/updatePost.php` | POST | Salva modifiche post |
 | `/admin/promote` | `admin/api/update/updateToAdmin.php` | POST | Promuovi utente ad Admin |
+| `/impostazioni/profilo` | `api/settingsApi/updateUser.php` | POST | Aggiorna profilo (parziale) |
 | *(qualsiasi altro)* | `pages/404/index.html` | — | Pagina 404 |
 
 ---
@@ -303,7 +306,7 @@ La classe `dbConnect` centralizza **tutta** la comunicazione con il database. Us
 - `ATTR_ERRMODE = ERRMODE_EXCEPTION` → gli errori lanciano eccezioni
 - `SET NAMES utf8mb4` → supporto completo Unicode
 
-Connessione default: `host=127.0.0.1`, `porta=3306`, `user=root`, `password=` (vuota), `db=blogDB`.
+Connessione default: `host=127.0.0.1`, `porta=3306`, `user=root`, `password=` (vuota), `db=DBPortfolio`.
 
 ### Metodi disponibili
 
@@ -500,7 +503,7 @@ La pagina ha un layout a due colonne (sidebar fissa + sezioni):
 | Cambio password | `#password` | Password attuale + nuova password + conferma |
 | Zona pericolosa | `#elimina` | Pulsante "Elimina account" con modale di conferma (CSS `:target`) |
 
-> **Attenzione:** i form di questa pagina puntano a `/impostazioni/profilo`, `/impostazioni/password` e `/impostazioni/elimina`, route **non presenti** nel router. La UI è completa ma il backend non è implementato.
+> **Attenzione:** solo il form "Modifica profilo" ha una route associata (`/impostazioni/profilo`) ma il backend è incompleto (stampa i campi e termina). I form per cambio password e eliminazione account puntano a route inesistenti nel router.
 
 ### 9.8 Pagina 404
 
@@ -523,7 +526,7 @@ La verifica è delegata alla funzione `checkUserAdmin()` chiamata in ogni file a
 
 **File:** `admin/dashboard.php`
 
-La dashboard è una **Single Page Application** client-side: il contenuto è diviso in **pannelli** HTML e JavaScript `showPanel(id, linkEl)` attiva quello selezionato nascondendo gli altri, senza ricaricare la pagina.
+La dashboard è una **Single Page Application** client-side: il contenuto è diviso in **pannelli** HTML e la funzione JavaScript `showPanel(id, linkEl)` attiva quello selezionato nascondendo gli altri, senza ricaricare la pagina.
 
 **Struttura:**
 
@@ -532,22 +535,22 @@ La dashboard è una **Single Page Application** client-side: il contenuto è div
 │   SIDEBAR        │   TOPBAR                             │
 │                  │──────────────────────────────────────│
 │  Generale        │   CONTENUTO (panel attivo)           │
-│    ◈ Overview    │                                      │
+│    Overview      │                                      │
 │                  │                                      │
 │  Contenuti       │                                      │
-│    📝 Post       │                                      │
-│    ＋ Nuovo post │                                      │
-│    🏷 Categorie  │                                      │
-│    📁 Progetti   │                                      │
-│    🗂 Nuovo proj │                                      │
+│    Post          │                                      │
+│    Nuovo post    │                                      │
+│    Categorie     │                                      │
+│    Progetti      │                                      │
+│    Nuovo proj    │                                      │
 │                  │                                      │
 │  Utenti          │                                      │
-│    👤 Utenti     │                                      │
-│    🛡 Admin      │                                      │
+│    Utenti        │                                      │
+│    Admin         │                                      │
 │                  │                                      │
 │  Sistema         │                                      │
-│    ⚙ Impostazioni│                                      │
-│    🚪 Logout     │                                      │
+│    Impostazioni  │                                      │
+│    Logout        │                                      │
 └──────────────────┴──────────────────────────────────────┘
 ```
 
@@ -629,7 +632,7 @@ Legge il campo `email` dal POST e chiama `$db->addAdminUserByEmail($email)` che 
 UPDATE Users SET Role_user = "Admin" WHERE Email = :email;
 ```
 
-> **Nota:** il file contiene `echo 1;` e `echo var_dump($addAdmin)` rimasti dal debug.
+> **Nota:** il file contiene `echo 1;` e `echo var_dump($addAdmin)` rimasti dal debug — da rimuovere prima del deploy in produzione.
 
 ---
 
@@ -644,7 +647,7 @@ La navbar è generata dalla funzione PHP `nav()` che restituisce una stringa HTM
 
 Link di navigazione: Home, Articoli, Progetti, About.
 
-La navbar è `position: sticky` con `backdrop-filter: blur(16px)` e si nasconde su mobile (< 768px).
+La navbar è `position: sticky` con `backdrop-filter: blur(16px)` e si semplifica su mobile (< 768px).
 
 ---
 
@@ -707,11 +710,11 @@ L'intera applicazione usa un tema scuro coerente definito tramite **CSS custom p
 
 ## 14. Funzionalità mancanti o parziali
 
-Le seguenti funzionalità sono presenti nell'interfaccia grafica ma **non hanno un backend implementato**:
+Le seguenti funzionalità sono presenti nell'interfaccia grafica ma **non hanno un backend completo**:
 
 | Funzionalità | Stato | Note |
 |---|---|---|
-| Modifica profilo utente | UI presente, nessun backend | Il form punta a `/impostazioni/profilo`, route inesistente |
+| Modifica profilo utente | Route presente, backend incompleto | `/impostazioni/profilo` esiste nel router ma `updateUser.php` si limita a stampare i campi e terminare |
 | Cambio password | UI presente, nessun backend | Il form punta a `/impostazioni/password`, route inesistente |
 | Eliminazione account | UI con modale CSS, nessun backend | Il form punta a `/impostazioni/elimina`, route inesistente |
 | Paginazione articoli | Placeholder `{{page_prev}}` / `{{page_next}}` | Non funzionale |
@@ -719,14 +722,12 @@ Le seguenti funzionalità sono presenti nell'interfaccia grafica ma **non hanno 
 | "Password dimenticata" | Link presente in `/auth` | Punta a `/password-reset`, route inesistente |
 | Ricordami (login) | Checkbox presente | Nessuna logica implementata |
 
-Sono presenti anche **output di debug** in `admin/api/update/updateToAdmin.php`:
+Sono presenti anche **output di debug** in `admin/api/update/updateToAdmin.php` da rimuovere prima del deploy:
 
 ```php
 echo 1;
 echo var_dump($addAdmin);
 ```
-
-Questi vanno rimossi prima di andare in produzione.
 
 ---
 
@@ -737,8 +738,26 @@ Questi vanno rimossi prima di andare in produzione.
 - PHP 8.x con estensione PDO e PDO_MySQL
 - MySQL / MariaDB
 - Composer (per le dipendenze)
+- XAMPP (opzionale, per Apache + MySQL integrati)
 
-### Installazione
+### Installazione automatica con setup.sh
+
+Il progetto include uno script `setup.sh` che automatizza l'installazione delle dipendenze di sistema, la creazione del database e la creazione del primo utente Admin.
+
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+Lo script:
+1. Rileva la distribuzione (Ubuntu o Arch Linux) e installa i pacchetti necessari
+2. Avvia Apache e MySQL tramite XAMPP (`/opt/lampp/lampp`)
+3. Chiede interattivamente nome, email, username e password dell'Admin
+4. Hasha la password con `password_hash` via PHP
+5. Importa lo schema SQL (`databaseApi/database.sql`) nel database `DBPortfolio`
+6. Crea l'utente Admin direttamente nel database
+
+### Installazione manuale
 
 ```bash
 # 1. Clonare il repository
@@ -748,22 +767,31 @@ cd ByteCore
 # 2. Installare le dipendenze PHP
 composer install
 
-# 3. Creare il database
-mysql -u root -p < databaseApi/database.sql
+# 3. Creare il database e lo schema
+mysql -u root -h 127.0.0.1 -P 3306 < databaseApi/database.sql
 
 # 4. Verificare le credenziali DB in databaseApi/dbConnect.php
 #    (host, port, user, password, dbName)
 
 # 5. Avviare il server PHP built-in
-php -S localhost:8000 router.php
+php -S 127.0.0.1:8080 router.php
 ```
 
-### Primo utente Admin
+Oppure usare direttamente lo script:
+
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+L'applicazione sarà disponibile su `http://127.0.0.1:8080`.
+
+### Primo utente Admin (installazione manuale)
 
 Dopo la registrazione tramite `/auth`, promuovere l'utente ad Admin direttamente sul database:
 
 ```sql
-USE blogDB;
+USE DBPortfolio;
 UPDATE Users SET Role_user = 'Admin' WHERE Email = 'tua@email.com';
 ```
 
@@ -771,4 +799,4 @@ Successivamente è possibile usare il pannello "Promuovi utente" nella dashboard
 
 ---
 
-*Documentazione generata il 12 giugno 2026*
+*Documentazione aggiornata il 15 giugno 2026 — Versione 1.0*
