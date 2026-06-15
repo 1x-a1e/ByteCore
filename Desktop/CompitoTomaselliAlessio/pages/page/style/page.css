@@ -1,0 +1,322 @@
+:root {
+--bg:      #080b10;
+--surface: #0d1117;
+--s2:      #161b22;
+--s3:      #1c2128;
+--border:  #21262d;
+--accent:  #00ff88;
+--accent2: #0066ff;
+--accent3: #ff4d6d;
+--text:    #e6edf3;
+--muted:   #7d8590;
+--mono: 'Share Tech Mono', monospace;
+--sans: 'Syne', sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+background: var(--bg);
+color: var(--text);
+font-family: var(--sans);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+body::before {
+content: '';
+position: fixed;
+inset: 0;
+background-image:
+    linear-gradient(rgba(0,255,136,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,136,0.025) 1px, transparent 1px);
+background-size: 40px 40px;
+pointer-events: none;
+z-index: 0;
+}
+
+/* ══════════════════════════════════════
+    LAYOUT
+══════════════════════════════════════ */
+.page {
+position: relative;
+z-index: 1;
+max-width: 780px;
+margin: 0 auto;
+padding: 60px 40px 100px;
+}
+
+/* ══════════════════════════════════════
+    BACK LINK
+══════════════════════════════════════ */
+.back-link {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+font-family: var(--mono);
+font-size: 11px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(--muted);
+text-decoration: none;
+margin-bottom: 48px;
+transition: color 0.2s;
+}
+
+.back-link:hover { color: var(--accent); }
+
+/* ══════════════════════════════════════
+    POST HEADER
+══════════════════════════════════════ */
+.post-header { margin-bottom: 40px; }
+
+.post-meta {
+display: flex;
+align-items: center;
+gap: 16px;
+margin-bottom: 20px;
+flex-wrap: wrap;
+}
+
+.post-tag {
+font-family: var(--mono);
+font-size: 10px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(--accent);
+background: rgba(0,255,136,0.08);
+border: 1px solid rgba(0,255,136,0.2);
+padding: 4px 12px;
+text-decoration: none;
+transition: background 0.2s;
+}
+
+.post-tag:hover { background: rgba(0,255,136,0.15); }
+
+.post-date {
+font-family: var(--mono);
+font-size: 11px;
+color: var(--muted);
+letter-spacing: 1px;
+}
+
+.post-title {
+font-size: clamp(28px, 4vw, 48px);
+font-weight: 800;
+line-height: 1.1;
+letter-spacing: -1.5px;
+margin-bottom: 28px;
+}
+
+/* Author */
+.post-author {
+display: flex;
+align-items: center;
+gap: 14px;
+padding: 16px 20px;
+background: var(--s2);
+border: 1px solid var(--border);
+border-left: 3px solid var(--accent);
+}
+
+.author-avatar {
+width: 40px; height: 40px;
+background: rgba(0,255,136,0.1);
+border: 1px solid rgba(0,255,136,0.3);
+color: var(--accent);
+font-family: var(--mono);
+font-size: 14px;
+font-weight: 700;
+display: grid;
+place-items: center;
+flex-shrink: 0;
+text-transform: uppercase;
+}
+
+.author-name {
+font-size: 14px;
+font-weight: 700;
+margin-bottom: 2px;
+}
+
+.author-username {
+font-family: var(--mono);
+font-size: 11px;
+color: var(--accent);
+letter-spacing: 1px;
+}
+
+/* ══════════════════════════════════════
+    COVER IMAGE
+══════════════════════════════════════ */
+.post-cover {
+width: 100%;
+height: 420px;
+object-fit: cover;
+display: block;
+border: 1px solid var(--border);
+margin-bottom: 48px;
+}
+
+/* ══════════════════════════════════════
+    POST CONTENT
+══════════════════════════════════════ */
+.post-divider {
+height: 1px;
+background: linear-gradient(90deg, var(--accent), transparent);
+margin-bottom: 48px;
+}
+
+.post-content {
+font-size: 17px;
+line-height: 1.85;
+color: #c9d1d9;
+}
+
+.post-content p { margin-bottom: 24px; }
+
+.post-content h2 {
+font-size: 24px;
+font-weight: 800;
+letter-spacing: -0.5px;
+margin: 40px 0 16px;
+color: var(--text);
+}
+
+.post-content h3 {
+font-size: 19px;
+font-weight: 700;
+margin: 32px 0 12px;
+color: var(--text);
+}
+
+.post-content code {
+font-family: var(--mono);
+font-size: 13px;
+background: var(--s2);
+border: 1px solid var(--border);
+padding: 2px 8px;
+color: var(--accent);
+}
+
+.post-content pre {
+background: var(--s2);
+border: 1px solid var(--border);
+border-left: 3px solid var(--accent);
+padding: 20px 24px;
+margin: 24px 0;
+overflow-x: auto;
+font-family: var(--mono);
+font-size: 13px;
+line-height: 1.7;
+color: var(--text);
+}
+
+.post-content pre code {
+background: none;
+border: none;
+padding: 0;
+color: inherit;
+}
+
+.post-content a {
+color: var(--accent2);
+text-decoration: underline;
+text-underline-offset: 3px;
+transition: color 0.2s;
+}
+
+.post-content a:hover { color: var(--accent); }
+
+.post-content ul,
+.post-content ol {
+padding-left: 24px;
+margin-bottom: 24px;
+}
+
+.post-content li { margin-bottom: 8px; }
+
+.post-content blockquote {
+border-left: 3px solid var(--accent);
+padding: 12px 20px;
+background: var(--s2);
+margin: 24px 0;
+font-family: var(--mono);
+font-size: 14px;
+color: var(--muted);
+font-style: italic;
+}
+
+/* ══════════════════════════════════════
+    POST FOOTER
+══════════════════════════════════════ */
+.post-footer {
+margin-top: 64px;
+padding-top: 32px;
+border-top: 1px solid var(--border);
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 16px;
+}
+
+.post-footer-author {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.footer-author-label {
+font-family: var(--mono);
+font-size: 10px;
+color: var(--muted);
+letter-spacing: 2px;
+text-transform: uppercase;
+margin-bottom: 3px;
+}
+
+.footer-author-name {
+font-size: 14px;
+font-weight: 700;
+}
+
+.back-btn {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+font-family: var(--mono);
+font-size: 11px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(--muted);
+background: var(--s2);
+border: 1px solid var(--border);
+padding: 12px 20px;
+text-decoration: none;
+transition: all 0.2s;
+}
+
+.back-btn:hover {
+color: var(--accent);
+border-color: var(--accent);
+background: rgba(0,255,136,0.04);
+}
+
+/* ══════════════════════════════════════
+    RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+.page { padding: 40px 20px 80px; }
+.post-cover { height: 240px; }
+.post-title { font-size: 28px; }
+.post-content { font-size: 15px; }
+}
+
+@media (max-width: 480px) {
+.page { padding: 28px 16px 60px; }
+.post-title { font-size: 24px; }
+.post-footer { flex-direction: column; align-items: flex-start; }
+}
