@@ -4,6 +4,7 @@
 **Versione:** 1.0  
 **Data:** Giugno 2026
 
+Progetto usato per l'esame finale di stato 2025/2026
 ---
 
 ## Indice
